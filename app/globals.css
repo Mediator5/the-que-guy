@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-purple:     #5B0DB5;
+  --brand-purple-dark: #120028;
+  --brand-gold:       #C9A011;
+  --brand-gold-light: #E8BF30;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #080808;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb { background: #5B0DB5; border-radius: 3px; }
+
+/* ── Selection ── */
+::selection { background: #5B0DB5; color: #E8BF30; }
+
+/* ── Gold shimmer text ── */
+.gold-shimmer {
+  background: linear-gradient(90deg, #9B7A08, #E8BF30, #C9A011, #E8BF30, #9B7A08);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 0% center; }
+  to   { background-position: 200% center; }
+}
+
+/* ── Star divider ── */
+.star-divider::before,
+.star-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #C9A011, transparent);
+}
+.star-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #C9A011;
+}
+
+/* ── Parallax container ── */
+.parallax-container {
+  will-change: transform;
+}
+
+/* ── Noise texture overlay ── */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Glow effect ── */
+.purple-glow {
+  box-shadow: 0 0 30px rgba(91, 13, 181, 0.4), 0 0 60px rgba(91, 13, 181, 0.2);
+}
+
+.gold-glow {
+  box-shadow: 0 0 20px rgba(201, 160, 17, 0.5), 0 0 40px rgba(201, 160, 17, 0.2);
+}
+
+/* ── Card hover ── */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(91, 13, 181, 0.3);
+}
+
+/* ── Flame underline ── */
+.flame-underline {
+  position: relative;
+}
+.flame-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #C9A011, #E8BF30, #C9A011);
+}
