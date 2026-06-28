@@ -41,6 +41,8 @@ const inputClass =
 
 export default function BookingSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState('');
   const [form, setForm] = useState({
     name: '', email: '', phone: '',
     eventType: '', date: '', guests: '', message: '',
@@ -48,10 +50,24 @@ export default function BookingSection() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In production, wire to an email service or form backend
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -199,11 +215,20 @@ export default function BookingSection() {
                   />
                 </div>
 
+                {error && (
+                  <div className="bg-red-900/40 border border-red-500/40 px-4 py-3 text-red-300 font-inter text-sm">
+                    {error}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="group relative overflow-hidden bg-brand-gold text-brand-dark font-oswald font-700 text-sm tracking-widest uppercase px-8 py-4 mt-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,160,17,0.5)] hover:scale-[1.02]"
+                  disabled={loading}
+                  className="group relative overflow-hidden bg-brand-gold disabled:opacity-60 disabled:cursor-not-allowed text-brand-dark font-oswald font-700 text-sm tracking-widest uppercase px-8 py-4 mt-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,160,17,0.5)] hover:scale-[1.02]"
                 >
-                  <span className="relative z-10">★ Send Booking Request</span>
+                  <span className="relative z-10">
+                    {loading ? '⏳ Sending...' : '★ Send Booking Request'}
+                  </span>
                   <div className="absolute inset-0 bg-brand-gold2 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />
                 </button>
 
