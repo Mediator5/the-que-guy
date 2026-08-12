@@ -7,8 +7,7 @@ import Image from 'next/image';
 const sandwiches = [
   { name: 'Chopped Chicken Sandwich', price: '$6.00' },
   { name: 'Chopped Turkey Sandwich',  price: '$6.00' },
-  { name: 'Chopped Pork Sandwich',    price: '$6.00' },
-  { name: 'Add Extra Meat',           price: '+$2.00', note: true },
+  { name: 'Chopped Pork BBQ Sandwich', price: '$6.00' },
 ];
 
 const sides = [
@@ -17,6 +16,12 @@ const sides = [
   { name: 'Baked Beans',   desc: 'Slow Cooked',           icon: '🫘' },
   { name: 'Collard Greens', desc: 'Classic Southern',     icon: '🌿' },
   { name: 'Potato Salad',  desc: 'Old School Recipe',     icon: '🥔' },
+];
+
+const cateringPackages = [
+  { name: 'Basic', priceRange: '$12–$15/person', includes: '1 meat + 2 sides' },
+  { name: 'Standard', priceRange: '$16–$20/person', includes: '2 meats + 2 sides' },
+  { name: 'Premium', priceRange: '$22–$25/person', includes: '3 meats + 3 sides + setup' },
 ];
 
 function FadeUp({ children, delay = 0, className = '' }) {
@@ -50,10 +55,10 @@ export default function MenuSection() {
             <span className="font-oswald text-xs tracking-[0.4em] text-brand-gold uppercase">★ The Menu ★</span>
           </div>
           <h2 className="font-oswald font-700 text-white text-4xl lg:text-6xl uppercase">
-            Order Up
+            Menu & Pricing
           </h2>
           <p className="font-inter text-white/50 text-base mt-3 max-w-lg mx-auto">
-            Every sandwich served with your choice of coleslaw on the sandwich or on the side.
+            All meats slow-smoked, hand-chopped, and served with your choice of sides. Available for individual orders or catering.
           </p>
         </FadeUp>
 
@@ -171,21 +176,43 @@ export default function MenuSection() {
           </FadeUp>
         </div>
 
-        {/* Bottom banner */}
+        {/* Catering Packages */}
         <FadeUp delay={0.5} className="mt-16">
-          <div className="bg-brand-gold/10 border border-brand-gold/30 p-6 sm:p-8 text-center">
-            <p className="font-dancing text-brand-gold2 text-2xl sm:text-3xl mb-2">
-              Ready to taste the Carolina difference?
-            </p>
-            <p className="font-inter text-white/60 text-sm mb-5">
-              Catering orders include meat, buns, sauce & 2 sides. Coleslaw counted as one side.
-            </p>
-            <button
-              onClick={() => document.querySelector('#catering')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-brand-gold hover:bg-brand-gold2 text-brand-dark font-oswald font-700 text-sm tracking-widest uppercase px-7 py-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(201,160,17,0.4)] hover:scale-105"
-            >
-              See Catering Packages →
-            </button>
+          <div>
+            <h3 className="font-oswald text-xs tracking-widest uppercase text-brand-gold mb-6 text-center">Catering Packages</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {cateringPackages.map((pkg) => (
+                <motion.div
+                  key={pkg.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-brand-dark border border-brand-purple/30 hover:border-brand-gold/50 p-6 text-center transition-all duration-300"
+                >
+                  <p className="font-oswald font-700 text-white text-xl mb-2">{pkg.name}</p>
+                  <p className="font-oswald text-brand-gold text-2xl font-700 mb-3">{pkg.priceRange}</p>
+                  <p className="font-inter text-white/60 text-sm">{pkg.includes}</p>
+                </motion.div>
+              ))}
+            </div>
+            <div className="bg-brand-gold/10 border border-brand-gold/30 p-6 sm:p-8 text-center">
+              <p className="font-dancing text-brand-gold2 text-2xl sm:text-3xl mb-3">
+                Ready to Book?
+              </p>
+              <p className="font-inter text-white/60 text-sm mb-2">
+                All packages include meat, buns, sauce, and your choice of sides.
+              </p>
+              <p className="font-oswald text-white/50 text-xs mb-5 tracking-wide">
+                Minimum booking: $500 | 50% deposit required
+              </p>
+              <button
+                onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-brand-gold hover:bg-brand-gold2 text-brand-dark font-oswald font-700 text-sm tracking-widest uppercase px-7 py-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(201,160,17,0.4)] hover:scale-105"
+              >
+                Book Your Event Now ★
+              </button>
+            </div>
           </div>
         </FadeUp>
       </div>

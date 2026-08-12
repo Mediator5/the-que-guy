@@ -7,19 +7,19 @@ import Image from 'next/image';
 const meats = [
   {
     name: 'Chopped Chicken',
-    description: 'Slow-smoked whole chickens, hand-chopped to tender perfection with our signature Eastern Carolina vinegar-based sauce.',
+    description: 'Seasoned and slow-smoked, then hand-chopped to tender perfection. Lighter in flavor but rich in authentic Eastern Carolina BBQ tradition.',
     image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?q=80&w=800&auto=format&fit=crop',
     tag: '★ Crowd Favorite',
   },
   {
     name: 'Chopped Turkey',
-    description: 'Juicy smoked turkey, rich in flavor and perfectly seasoned — a lighter option that doesn\'t compromise on the Carolina BBQ experience.',
+    description: 'Tender and juicy, Carolina-style. A flavorful alternative that captures the essence of Eastern North Carolina smoking traditions.',
     image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=800&auto=format&fit=crop',
     tag: '★ Fan Favorite',
   },
   {
-    name: 'Chopped Pork',
-    description: 'The classic — whole shoulder pork, low and slow over real wood smoke, hand-pulled and chopped to melt-in-your-mouth greatness.',
+    name: 'Chopped Pork BBQ',
+    description: 'The authentic classic — whole shoulder pork, slow-smoked over real wood, hand-chopped to melt-in-your-mouth perfection. Pure Eastern Carolina.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop',
     tag: '★ Signature',
   },
@@ -106,7 +106,7 @@ export default function Meats() {
             Choose Your <span className="text-brand-gold">Que</span>
           </h2>
           <p className="font-inter text-white/50 text-base mt-4 max-w-xl mx-auto">
-            All three proteins slow-smoked over real wood, chopped fresh to order — served with your choice of coleslaw on or on the side.
+            All three meats slow-smoked over real wood, chopped fresh to order in the authentic Eastern Carolina style.
           </p>
         </motion.div>
 
@@ -125,12 +125,12 @@ export default function Meats() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-14"
         >
-          <p className="font-dancing text-brand-gold2 text-2xl mb-4">Available as sandwiches or catering trays</p>
+          <p className="font-dancing text-brand-gold2 text-2xl mb-4">All meats available as sandwiches or catering portions</p>
           <button
             onClick={() => document.querySelector('#menu')?.scrollIntoView({ behavior: 'smooth' })}
             className="font-oswald text-sm tracking-widest uppercase text-white/60 hover:text-brand-gold transition-colors underline underline-offset-4"
           >
-            See Full Menu & Pricing →
+            View Menu & Pricing →
           </button>
         </motion.div>
       </div>

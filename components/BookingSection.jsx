@@ -44,8 +44,16 @@ export default function BookingSection() {
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState('');
   const [form, setForm] = useState({
-    name: '', email: '', phone: '',
-    eventType: '', date: '', guests: '', message: '',
+    // Client Information
+    name: '', phone: '', email: '',
+    // Event Details
+    eventDate: '', eventTime: '', eventLocation: '', guests: '',
+    // Package Selection
+    packageType: '',
+    // Menu Selection
+    meats: [], sides: [],
+    // Terms
+    agreeTerms: false,
   });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -114,105 +122,201 @@ export default function BookingSection() {
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {/* Row 1 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Full Name *</label>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+
+                {/* CLIENT INFORMATION */}
+                <div className="border-t border-brand-gold/20 pt-4">
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Client Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        placeholder="Full Name"
+                        value={form.name}
+                        onChange={handleChange}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Phone *</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        placeholder="(614) 000-0000"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="your@email.com"
+                      value={form.email}
+                      onChange={handleChange}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+
+                {/* EVENT DETAILS */}
+                <div className="border-t border-brand-gold/20 pt-4">
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Event Details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Date *</label>
+                      <input
+                        type="date"
+                        name="eventDate"
+                        required
+                        value={form.eventDate}
+                        onChange={handleChange}
+                        className={`${inputClass} [color-scheme:dark]`}
+                      />
+                    </div>
+                    <div>
+                      <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Time *</label>
+                      <input
+                        type="time"
+                        name="eventTime"
+                        required
+                        value={form.eventTime}
+                        onChange={handleChange}
+                        className={`${inputClass} [color-scheme:dark]`}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Location *</label>
                     <input
                       type="text"
-                      name="name"
+                      name="eventLocation"
                       required
-                      placeholder="Your full name"
-                      value={form.name}
+                      placeholder="Event Address"
+                      value={form.eventLocation}
                       onChange={handleChange}
                       className={inputClass}
                     />
                   </div>
-                  <div>
-                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Phone Number *</label>
+                  <div className="mt-4">
+                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Number of Guests *</label>
                     <input
-                      type="tel"
-                      name="phone"
-                      required
-                      placeholder="(614) 000-0000"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-
-                {/* Row 2 */}
-                <div>
-                  <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="your@email.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    className={inputClass}
-                  />
-                </div>
-
-                {/* Row 3 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Type *</label>
-                    <select
-                      name="eventType"
-                      required
-                      value={form.eventType}
-                      onChange={handleChange}
-                      className={`${inputClass} cursor-pointer`}
-                    >
-                      <option value="" disabled>Select event type</option>
-                      {eventTypes.map((t) => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Guest Count</label>
-                    <select
+                      type="number"
                       name="guests"
+                      required
+                      min="1"
+                      placeholder="Expected guest count"
                       value={form.guests}
                       onChange={handleChange}
-                      className={`${inputClass} cursor-pointer`}
-                    >
-                      <option value="" disabled>Estimated guests</option>
-                      {guestRanges.map((g) => (
-                        <option key={g} value={g}>{g}</option>
-                      ))}
-                    </select>
+                      className={inputClass}
+                    />
                   </div>
                 </div>
 
-                {/* Row 4 */}
-                <div>
-                  <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Date *</label>
-                  <input
-                    type="date"
-                    name="date"
-                    required
-                    value={form.date}
-                    onChange={handleChange}
-                    className={`${inputClass} [color-scheme:dark]`}
-                  />
+                {/* PACKAGE SELECTION */}
+                <div className="border-t border-brand-gold/20 pt-4">
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Package Selection *</h3>
+                  <div className="space-y-3">
+                    {[
+                      { id: 'basic', label: 'Basic', price: '$12–$15/person', desc: '1 meat + 2 sides' },
+                      { id: 'standard', label: 'Standard', price: '$16–$20/person', desc: '2 meats + 2 sides' },
+                      { id: 'premium', label: 'Premium', price: '$22–$25/person', desc: '3 meats + 3 sides + setup' },
+                    ].map((pkg) => (
+                      <label key={pkg.id} className="flex items-start gap-3 p-3 border border-brand-purple/30 cursor-pointer hover:bg-brand-purple/10 transition-colors">
+                        <input
+                          type="radio"
+                          name="packageType"
+                          value={pkg.id}
+                          required
+                          checked={form.packageType === pkg.id}
+                          onChange={handleChange}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <p className="font-oswald text-white font-600">{pkg.label} — {pkg.price}</p>
+                          <p className="font-inter text-white/50 text-xs">{pkg.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Row 5 */}
-                <div>
-                  <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Message / Special Requests</label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    placeholder="Tell us about your event, dietary needs, or any special requests..."
-                    value={form.message}
-                    onChange={handleChange}
-                    className={`${inputClass} resize-none`}
-                  />
+                {/* MENU SELECTION */}
+                <div className="border-t border-brand-gold/20 pt-4">
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Menu Selection</h3>
+                  <div className="mb-4">
+                    <p className="font-oswald text-white/70 text-xs mb-3">Meats (choose as per package)</p>
+                    <div className="space-y-2">
+                      {['Chicken', 'Turkey', 'Pork'].map((meat) => (
+                        <label key={meat} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            value={meat}
+                            checked={form.meats.includes(meat)}
+                            onChange={(e) => {
+                              const newMeats = e.target.checked
+                                ? [...form.meats, meat]
+                                : form.meats.filter(m => m !== meat);
+                              setForm({ ...form, meats: newMeats });
+                            }}
+                          />
+                          <span className="font-inter text-white text-sm">Chopped {meat}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-oswald text-white/70 text-xs mb-3">Sides (choose as per package)</p>
+                    <div className="space-y-2">
+                      {['Coleslaw', 'Mac & Cheese', 'Baked Beans', 'Collard Greens', 'Potato Salad'].map((side) => (
+                        <label key={side} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            value={side}
+                            checked={form.sides.includes(side)}
+                            onChange={(e) => {
+                              const newSides = e.target.checked
+                                ? [...form.sides, side]
+                                : form.sides.filter(s => s !== side);
+                              setForm({ ...form, sides: newSides });
+                            }}
+                          />
+                          <span className="font-inter text-white text-sm">{side}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* TERMS & CONDITIONS */}
+                <div className="border-t border-brand-gold/20 pt-4">
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Terms & Conditions</h3>
+                  <div className="bg-brand-dark/40 border border-brand-purple/20 p-4 mb-4 text-xs space-y-2">
+                    <p className="text-white/70">• 50% deposit required to secure booking</p>
+                    <p className="text-white/70">• Remaining balance due 48 hours prior to event</p>
+                    <p className="text-white/70">• Minimum booking: $500</p>
+                    <p className="text-white/70">• Final guest count due 72 hours prior</p>
+                    <p className="text-white/70">• Cancellation within 7 days forfeits deposit</p>
+                  </div>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="agreeTerms"
+                      required
+                      checked={form.agreeTerms}
+                      onChange={handleChange}
+                      className="mt-1"
+                    />
+                    <span className="font-inter text-white/70 text-sm">I agree to the terms & conditions above</span>
+                  </label>
                 </div>
 
                 {error && (
@@ -227,13 +331,13 @@ export default function BookingSection() {
                   className="group relative overflow-hidden bg-brand-gold disabled:opacity-60 disabled:cursor-not-allowed text-brand-dark font-oswald font-700 text-sm tracking-widest uppercase px-8 py-4 mt-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,160,17,0.5)] hover:scale-[1.02]"
                 >
                   <span className="relative z-10">
-                    {loading ? '⏳ Sending...' : '★ Send Booking Request'}
+                    {loading ? '⏳ Sending...' : '★ Submit Booking Request'}
                   </span>
                   <div className="absolute inset-0 bg-brand-gold2 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />
                 </button>
 
                 <p className="font-inter text-white/30 text-xs text-center">
-                  Or call/text us directly: <a href="tel:6149710711" className="text-brand-gold hover:text-brand-gold2">614-971-0711</a>
+                  For faster booking, call/text: <a href="tel:6149710711" className="text-brand-gold hover:text-brand-gold2">614-971-0711</a>
                 </p>
               </form>
             )}

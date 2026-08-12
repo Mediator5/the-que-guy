@@ -100,26 +100,32 @@ export default function About() {
 
             <FadeUp delay={0.3}>
               <p className="font-inter text-white/70 text-lg leading-relaxed">
-                The Que Guy LLC brings the bold, smoky tradition of Eastern North Carolina BBQ straight to Columbus, OH. We&apos;re talking low-and-slow, wood-smoked meats — chopped chicken, turkey, and pork — done the way it&apos;s been done in the Carolinas for generations.
+                Growing up in Eastern North Carolina, I spent my summers working alongside my uncle at our family's BBQ stand in Riverside. While most kids were sleeping in, my mother made sure my brothers, cousins, and I were up at 4:00 a.m. to help prepare for the day ahead. Those early mornings taught us the craft of authentic Eastern North Carolina BBQ — the traditions passed down through generations.
               </p>
             </FadeUp>
 
             <FadeUp delay={0.4}>
               <p className="font-inter text-white/70 text-lg leading-relaxed">
-                Whether it&apos;s a backyard cookout or a 150-person corporate event, we show up 1.5–2 hours early, set up with care, and serve with pride. Our packages include everything — meat, buns, sauce, and sides — so you can focus on your guests and leave the smoke to us.
+                We learned that Chopped Que isn't simply a cooking method — it's a cultural staple and a source of community pride. As I grew older, I expanded on those traditions by developing my own recipes for chopped turkey and chicken while honoring the authentic Eastern North Carolina process I learned as a child. Today, The Que Guy LLC brings those traditions to Central Ohio, introducing an authentic Eastern North Carolina BBQ experience to a market where this style remains largely untapped.
               </p>
             </FadeUp>
 
             <FadeUp delay={0.5}>
               <div className="border-l-4 border-brand-gold pl-5 py-2 my-2">
                 <p className="font-dancing text-brand-gold2 text-2xl lg:text-3xl">
-                  &ldquo;Real Smoke. Real Flavor. Real Carolina.&rdquo;
+                  &ldquo;Slow Smoked. Chopped Right. Served with Carolina Pride.&rdquo;
                 </p>
               </div>
             </FadeUp>
 
             <FadeUp delay={0.6}>
-              <div className="flex flex-wrap gap-3 mt-2">
+              <p className="font-inter text-white/70 text-sm leading-relaxed italic border-l-2 border-brand-gold pl-4">
+                Our mission is simple: to share the authentic taste of Eastern North Carolina chopped BBQ through quality food, exceptional service, and a commitment to preserving a tradition that has been part of my family for generations.
+              </p>
+            </FadeUp>
+
+            <FadeUp delay={0.65}>
+              <div className="flex flex-wrap gap-3 mt-4">
                 {['Wood Smoked', 'Eastern NC Style', 'Family Recipes', 'Columbus, OH'].map((tag) => (
                   <span
                     key={tag}
