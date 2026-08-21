@@ -125,7 +125,7 @@ export default function Meats() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-14"
         >
-          <p className="font-dancing text-brand-gold2 text-2xl mb-4">All meats available as sandwiches or catering portions</p>
+          <p className="font-dancing text-brand-gold2 text-2xl mb-4">Available by the pan, the tray or the pint</p>
           <button
             onClick={() => document.querySelector('#menu')?.scrollIntoView({ behavior: 'smooth' })}
             className="font-oswald text-sm tracking-widest uppercase text-white/60 hover:text-brand-gold transition-colors underline underline-offset-4"

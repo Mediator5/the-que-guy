@@ -11,7 +11,28 @@ const transporter = nodemailer.createTransport({
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, email, phone, eventType, date, guests, message } = body;
+    const {
+      name,
+      email,
+      phone,
+      eventType,
+      eventDate,
+      eventTime,
+      eventLocation,
+      guests,
+      orderTypes,
+      meats,
+      sides,
+      message,
+      // legacy field name, kept so older payloads still work
+      date: legacyDate,
+    } = body;
+
+    const date = eventDate || legacyDate;
+    const list = (v) => (Array.isArray(v) && v.length ? v.join(', ') : '');
+    const orderSummary = list(orderTypes);
+    const meatSummary  = list(meats);
+    const sideSummary  = list(sides);
 
     // Basic validation
     if (!name || !phone || !eventType || !date) {
@@ -20,6 +41,13 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    const row = (label, value, gold = false) => value
+      ? `<tr>
+           <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;width:35%;">${label}</td>
+           <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:${gold ? '#E8BF30' : '#ffffff'};font-size:15px;${gold ? 'font-weight:700;' : ''}">${value}</td>
+         </tr>`
+      : '';
 
     // ── Email to The Que Guy ──────────────────────────────────────────────
     const ownerMail = {
@@ -51,22 +79,18 @@ export async function POST(request) {
                 <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Email</td>
                 <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#ffffff;font-size:15px;">${email ? `<a href="mailto:${email}" style="color:#E8BF30;">${email}</a>` : '<span style="color:rgba(255,255,255,0.4)">Not provided</span>'}</td>
               </tr>
-              <tr>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Event Type</td>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#ffffff;font-size:15px;">${eventType}</td>
-              </tr>
-              <tr>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Event Date</td>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#E8BF30;font-size:15px;font-weight:700;">${date}</td>
-              </tr>
-              <tr>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Guest Count</td>
-                <td style="padding:10px 0;border-bottom:1px solid rgba(91,13,181,0.3);color:#ffffff;font-size:15px;">${guests || 'Not specified'}</td>
-              </tr>
+              ${row('Event Type', eventType)}
+              ${row('Event Date', date, true)}
+              ${row('Event Time', eventTime)}
+              ${row('Location', eventLocation)}
+              ${row('Guest Count', guests || 'Not specified')}
+              ${row('Order Type', orderSummary, true)}
+              ${row('Meats', meatSummary)}
+              ${row('Sides', sideSummary)}
               ${message ? `
               <tr>
                 <td colspan="2" style="padding:16px 0 0;">
-                  <p style="margin:0 0 8px;color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Message / Special Requests</p>
+                  <p style="margin:0 0 8px;color:#C9A011;font-size:11px;letter-spacing:2px;text-transform:uppercase;">Quantities / Special Requests</p>
                   <p style="margin:0;color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6;background:rgba(91,13,181,0.2);padding:12px;border-left:3px solid #C9A011;">${message}</p>
                 </td>
               </tr>` : ''}
@@ -107,7 +131,11 @@ export async function POST(request) {
                   <p style="margin:0;color:#C9A011;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Your Request Summary</p>
                   <p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">📅 Date: <strong style="color:#fff;">${date}</strong></p>
                   <p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">🎉 Event: <strong style="color:#fff;">${eventType}</strong></p>
+                  ${eventTime ? `<p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">🕐 Time: <strong style="color:#fff;">${eventTime}</strong></p>` : ''}
                   ${guests ? `<p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">👥 Guests: <strong style="color:#fff;">${guests}</strong></p>` : ''}
+                  ${orderSummary ? `<p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">🍖 Order: <strong style="color:#fff;">${orderSummary}</strong></p>` : ''}
+                  ${meatSummary ? `<p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">🔥 Meats: <strong style="color:#fff;">${meatSummary}</strong></p>` : ''}
+                  ${sideSummary ? `<p style="margin:4px 0;color:rgba(255,255,255,0.7);font-size:14px;">🥗 Sides: <strong style="color:#fff;">${sideSummary}</strong></p>` : ''}
                 </div>
 
                 <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;margin:0 0 8px;">

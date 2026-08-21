@@ -6,7 +6,7 @@ import { motion, useInView } from 'framer-motion';
 const terms = [
   { text: '50% Non-Refundable Deposit required to secure your date', icon: '💳' },
   { text: 'Remaining balance due 7 days prior to the event', icon: '📅' },
-  { text: 'Minimum booking: $500', icon: '💰' },
+  { text: 'Full-service catered events carry a $500 minimum', icon: '💰' },
   { text: 'Final headcount due 7 days before your event', icon: '👥' },
   { text: 'We arrive 1.5–2 hours before serving time for full setup', icon: '🕐' },
   { text: 'Cancellations within 7 days are non-refundable', icon: '⚠️' },

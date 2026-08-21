@@ -6,7 +6,7 @@ const quickLinks = [
   { label: 'Home',             href: '#home' },
   { label: 'About Us',         href: '#about' },
   { label: 'Our Menu',         href: '#menu' },
-  { label: 'Catering Packages', href: '#catering' },
+  { label: 'Catering', href: '#catering' },
   { label: 'Events We Serve',  href: '#events' },
   { label: 'Book Your Event',  href: '#contact' },
 ];

@@ -13,11 +13,13 @@ const eventTypes = [
   'Other',
 ];
 
-const guestRanges = [
-  'Under 50',
-  '50–100',
-  '100–150',
-  '150+',
+const orderTypes = [
+  { id: 'full-pan',   label: 'Full Pan',            price: 'Turkey $120 · Chicken $120 · Pork $100' },
+  { id: 'half-pan',   label: 'Half Pan',            price: 'Turkey $60 · Chicken $60' },
+  { id: 'trays',      label: 'Order Trays',         price: 'Small $7 · Large $14 — with slaw & hushpuppies' },
+  { id: 'pints',      label: 'Pints',               price: '16 oz $10 · Half pint $5' },
+  { id: 'chicken',    label: 'Smoked Chicken',      price: 'Whole $14 · Half $7' },
+  { id: 'consult',    label: 'Catering Consultation', price: 'Not sure yet — let’s build a menu together' },
 ];
 
 function FadeUp({ children, delay = 0, className = '' }) {
@@ -47,19 +49,36 @@ export default function BookingSection() {
     // Client Information
     name: '', phone: '', email: '',
     // Event Details
-    eventDate: '', eventTime: '', eventLocation: '', guests: '',
-    // Package Selection
-    packageType: '',
+    eventType: '', eventDate: '', eventTime: '', eventLocation: '', guests: '',
+    // What they want to order
+    orderTypes: [],
     // Menu Selection
     meats: [], sides: [],
+    // Extra notes
+    message: '',
     // Terms
     agreeTerms: false,
   });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const toggleInList = (key, value) =>
+    setForm((prev) => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter((v) => v !== value)
+        : [...prev[key], value],
+    }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (form.orderTypes.length === 0) {
+      setError('Please choose at least one order type.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -170,6 +189,21 @@ export default function BookingSection() {
                 {/* EVENT DETAILS */}
                 <div className="border-t border-brand-gold/20 pt-4">
                   <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Event Details</h3>
+                  <div className="mb-4">
+                    <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Type *</label>
+                    <select
+                      name="eventType"
+                      required
+                      value={form.eventType}
+                      onChange={handleChange}
+                      className={`${inputClass} [color-scheme:dark]`}
+                    >
+                      <option value="">Select event type</option>
+                      {eventTypes.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="font-oswald text-xs text-white/50 tracking-widest uppercase block mb-1.5">Event Date *</label>
@@ -221,28 +255,30 @@ export default function BookingSection() {
                   </div>
                 </div>
 
-                {/* PACKAGE SELECTION */}
+                {/* ORDER TYPE */}
                 <div className="border-t border-brand-gold/20 pt-4">
-                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Package Selection *</h3>
+                  <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-1">What Are You Ordering? *</h3>
+                  <p className="font-inter text-white/40 text-xs mb-4">Choose everything that applies — we&apos;ll confirm quantities with you.</p>
                   <div className="space-y-3">
-                    {[
-                      { id: 'basic', label: 'Basic', price: '$12–$15/person', desc: '1 meat + 2 sides' },
-                      { id: 'standard', label: 'Standard', price: '$16–$20/person', desc: '2 meats + 2 sides' },
-                      { id: 'premium', label: 'Premium', price: '$22–$25/person', desc: '3 meats + 3 sides + setup' },
-                    ].map((pkg) => (
-                      <label key={pkg.id} className="flex items-start gap-3 p-3 border border-brand-purple/30 cursor-pointer hover:bg-brand-purple/10 transition-colors">
+                    {orderTypes.map((opt) => (
+                      <label
+                        key={opt.id}
+                        className={`flex items-start gap-3 p-3 border cursor-pointer transition-colors ${
+                          form.orderTypes.includes(opt.label)
+                            ? 'border-brand-gold/60 bg-brand-gold/10'
+                            : 'border-brand-purple/30 hover:bg-brand-purple/10'
+                        }`}
+                      >
                         <input
-                          type="radio"
-                          name="packageType"
-                          value={pkg.id}
-                          required
-                          checked={form.packageType === pkg.id}
-                          onChange={handleChange}
+                          type="checkbox"
+                          value={opt.label}
+                          checked={form.orderTypes.includes(opt.label)}
+                          onChange={() => toggleInList('orderTypes', opt.label)}
                           className="mt-1"
                         />
                         <div className="flex-1">
-                          <p className="font-oswald text-white font-600">{pkg.label} — {pkg.price}</p>
-                          <p className="font-inter text-white/50 text-xs">{pkg.desc}</p>
+                          <p className="font-oswald text-white font-600">{opt.label}</p>
+                          <p className="font-inter text-white/50 text-xs">{opt.price}</p>
                         </div>
                       </label>
                     ))}
@@ -253,7 +289,7 @@ export default function BookingSection() {
                 <div className="border-t border-brand-gold/20 pt-4">
                   <h3 className="font-oswald text-brand-gold text-xs tracking-widest uppercase mb-4">Menu Selection</h3>
                   <div className="mb-4">
-                    <p className="font-oswald text-white/70 text-xs mb-3">Meats (choose as per package)</p>
+                    <p className="font-oswald text-white/70 text-xs mb-3">Meats</p>
                     <div className="space-y-2">
                       {['Chicken', 'Turkey', 'Pork'].map((meat) => (
                         <label key={meat} className="flex items-center gap-2 cursor-pointer">
@@ -261,38 +297,39 @@ export default function BookingSection() {
                             type="checkbox"
                             value={meat}
                             checked={form.meats.includes(meat)}
-                            onChange={(e) => {
-                              const newMeats = e.target.checked
-                                ? [...form.meats, meat]
-                                : form.meats.filter(m => m !== meat);
-                              setForm({ ...form, meats: newMeats });
-                            }}
+                            onChange={() => toggleInList('meats', meat)}
                           />
                           <span className="font-inter text-white text-sm">Chopped {meat}</span>
                         </label>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <p className="font-oswald text-white/70 text-xs mb-3">Sides (choose as per package)</p>
+                  <div className="mb-4">
+                    <p className="font-oswald text-white/70 text-xs mb-3">Sides</p>
                     <div className="space-y-2">
-                      {['Coleslaw', 'Mac & Cheese', 'Baked Beans', 'Collard Greens', 'Potato Salad'].map((side) => (
+                      {['Coleslaw', 'Hushpuppies', 'Mac & Cheese', 'Baked Beans', 'Collard Greens', 'Potato Salad'].map((side) => (
                         <label key={side} className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="checkbox"
                             value={side}
                             checked={form.sides.includes(side)}
-                            onChange={(e) => {
-                              const newSides = e.target.checked
-                                ? [...form.sides, side]
-                                : form.sides.filter(s => s !== side);
-                              setForm({ ...form, sides: newSides });
-                            }}
+                            onChange={() => toggleInList('sides', side)}
                           />
                           <span className="font-inter text-white text-sm">{side}</span>
                         </label>
                       ))}
                     </div>
+                  </div>
+                  <div>
+                    <label className="font-oswald text-white/70 text-xs block mb-3">Quantities / Special Requests</label>
+                    <textarea
+                      name="message"
+                      rows={4}
+                      placeholder="e.g. 2 full pans of turkey, 1 half pan of chicken, 10 large trays…"
+                      value={form.message}
+                      onChange={handleChange}
+                      className={`${inputClass} resize-y`}
+                    />
                   </div>
                 </div>
 
@@ -302,7 +339,7 @@ export default function BookingSection() {
                   <div className="bg-brand-dark/40 border border-brand-purple/20 p-4 mb-4 text-xs space-y-2">
                     <p className="text-white/70">• 50% deposit required to secure booking</p>
                     <p className="text-white/70">• Remaining balance due 48 hours prior to event</p>
-                    <p className="text-white/70">• Minimum booking: $500</p>
+                    <p className="text-white/70">• Full-service catered events: $500 minimum</p>
                     <p className="text-white/70">• Final guest count due 72 hours prior</p>
                     <p className="text-white/70">• Cancellation within 7 days forfeits deposit</p>
                   </div>
@@ -353,7 +390,7 @@ export default function BookingSection() {
               </p>
               <p className="font-dancing text-xl mt-1">Dates Fill Up Fast!</p>
               <p className="font-inter text-brand-dark/70 text-xs mt-2 tracking-wide uppercase">
-                Minimum Booking: $500
+                Catered Events: $500 Minimum
               </p>
             </div>
 
